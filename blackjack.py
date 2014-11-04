@@ -2,6 +2,9 @@
 import random
 
 def main():
+	start_game()
+
+def start_game():
 	print "Welcome to Blackjack in Python!" 
 	deck_count = raw_input('How many decks would you like to use? Enter 1-6: ')
 	deck_count = int(deck_count)
@@ -13,11 +16,17 @@ def main():
 		deck = Deck()
 		deck.populate_deck()
 		decks.append(deck)
-		print 'I just added a deck'
+	
+	
+	for deck in decks:
+		master_deck.extend(deck.cards)
+	random.shuffle(master_deck)
+
+	
 			
 	players_hand = Hand()
-	players_hand.cards.append(deck.cards.pop())
-	players_hand.cards.append(deck.cards.pop())
+	players_hand.cards.append(master_deck.pop())
+	players_hand.cards.append(master_deck.pop())
 	print players_hand.cards
 
 class Deck(object):
@@ -46,17 +55,15 @@ class Card(object):
 		return self.number + self.suit
 
 class Hand(object):
-	cards = []
-
 	def __init__(self):
-		pass
+		self.cards = []
 
 
 card_numbers = ["A", '2', '3', '4', '5', '6', '7', '8', '9', '10', "J", "Q", "K"]
 card_suits = ["H", "C", "D", "S"]
 discard_pile = []
 decks = []
-
+master_deck = []
 
 if __name__ == "__main__":	
 	main()
