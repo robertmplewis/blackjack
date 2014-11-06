@@ -6,28 +6,26 @@ def main():
 
 def start_game():
 	print "Welcome to Blackjack in Python!" 
-	deck_count = raw_input('How many decks would you like to use? Enter 1-6: ')
+	deck_count = raw_input('How many decks would you like to use? Enter #: ')
 	deck_count = int(deck_count)
-	if deck_count > 6:
-		print 'Too many decks selected.'
-		return
+	print "The game will now start."
 
-	for i in range(deck_count):
-		deck = Deck()
-		deck.populate_deck()
-		decks.append(deck)
-	
-	
-	for deck in decks:
-		master_deck.extend(deck.cards)
-	random.shuffle(master_deck)
+	deck_collection = DeckCollection(deck_count)
+	deck_collection.merge_decks()
 
+	player_hand = Hand()
+	dealer_hand = Hand()
 	
-			
-	players_hand = Hand()
-	players_hand.cards.append(master_deck.pop())
-	players_hand.cards.append(master_deck.pop())
-	print players_hand.cards
+	player_hand.cards.append(deck_collection.cards.pop())
+	dealer_hand.cards.append(deck_collection.cards.pop())
+	print "Dealer shows %s" % (dealer_hand)
+	player_hand.cards.append(deck_collection.cards.pop())
+	dealer_hand.cards.append(deck_collection.cards.pop())
+
+	raw_input("Your hand is now %s. Would you like to hit or stand?" % (player_hand))
+
+
+
 
 class Deck(object):
 	def __init__(self):
@@ -46,6 +44,28 @@ class Deck(object):
 		random.shuffle(self.cards)
 		print "The deck has now been shuffled!"
 
+class DeckCollection(object):
+	def __init__(self, deck_count):
+		self.decks = []
+		self.cards = []
+		for i in range(deck_count):
+			deck = Deck()
+			deck.populate_deck()
+			self.decks.append(deck)
+
+
+	def merge_decks(self):
+		for deck in self.decks:
+			self.cards.extend(deck.cards)
+		self.decks = []
+
+	def shuffle_cards(self):
+		random.shuffle(deck.cards)
+
+	def __repr__(self):
+		return "A collection of %s decks." % (len(self.decks))
+
+
 class Card(object):
 	def __init__(self, number, suit):
 		self.number = number
@@ -58,6 +78,12 @@ class Hand(object):
 	def __init__(self):
 		self.cards = []
 
+	def __repr__(self):
+		if len(self.cards) == 1:
+			return str(self.cards[0])
+		else:
+			return "%s, %s" % (str(self.cards[0]), str(self.cards[1])) 
+		
 
 card_numbers = ["A", '2', '3', '4', '5', '6', '7', '8', '9', '10', "J", "Q", "K"]
 card_suits = ["H", "C", "D", "S"]
