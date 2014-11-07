@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import random
 
+
 def main():
 	start_game()
 
@@ -10,20 +11,30 @@ def start_game():
 	deck_count = int(deck_count)
 	print "The game will now start."
 
-	deck_collection = DeckCollection(deck_count)
-	deck_collection.merge_decks()
+	shoe = Shoe(deck_count)
+	shoe.merge_decks()
+	shoe.shuffle_cards()
 
 	player_hand = Hand()
 	dealer_hand = Hand()
 	
-	player_hand.cards.append(deck_collection.cards.pop())
-	dealer_hand.cards.append(deck_collection.cards.pop())
+	player_hand.cards.append(shoe.cards.pop())
+	dealer_hand.cards.append(shoe.cards.pop())
 	print "Dealer shows %s" % (dealer_hand)
-	player_hand.cards.append(deck_collection.cards.pop())
-	dealer_hand.cards.append(deck_collection.cards.pop())
+	player_hand.cards.append(shoe.cards.pop())
+	dealer_hand.cards.append(shoe.cards.pop())
 
-	raw_input("Your hand is now %s. Would you like to hit or stand?" % (player_hand))
 
+	print  'Your total value is %s' % (player_hand.calculate_value())
+
+	while True:
+		players_move = raw_input("Your hand is now %s. Would you like to hit or stand?" % (player_hand))
+		if players_move == 'hit' or players_move == 'h':
+			player_hand.cards.append(shoe.cards.pop())
+			print  'Your total value is %s' % (player_hand.calculate_value())
+		elif players_move == 'stand' or players_move == 's':
+			print "Ok, you stand."
+			break
 
 
 
@@ -44,7 +55,9 @@ class Deck(object):
 		random.shuffle(self.cards)
 		print "The deck has now been shuffled!"
 
-class DeckCollection(object):
+
+
+class Shoe(object):
 	def __init__(self, deck_count):
 		self.decks = []
 		self.cards = []
@@ -60,10 +73,11 @@ class DeckCollection(object):
 		self.decks = []
 
 	def shuffle_cards(self):
-		random.shuffle(deck.cards)
+		random.shuffle(self.cards)
 
 	def __repr__(self):
 		return "A collection of %s decks." % (len(self.decks))
+
 
 
 class Card(object):
@@ -74,17 +88,32 @@ class Card(object):
 	def __repr__(self):
 		return self.number + self.suit
 
+
+
 class Hand(object):
 	def __init__(self):
 		self.cards = []
 
 	def __repr__(self):
-		if len(self.cards) == 1:
-			return str(self.cards[0])
-		else:
-			return "%s, %s" % (str(self.cards[0]), str(self.cards[1])) 
-		
+		ret = ''
+		for card in self.cards:
+			ret = ret + str(card) + ' '
+		return ret
 
+	def calculate_value(self):
+		total = 0
+		# turn total into the real total
+		for card in self.cards:
+			total = total + card_values[card_numbers.index(card.number)]
+		has_ace = False
+		for card in self.cards:
+			if card.number == 'A':
+				has_ace = True
+		if total >= 11 and has_ace:
+			total = total + 10 
+		return total
+
+card_values = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10]
 card_numbers = ["A", '2', '3', '4', '5', '6', '7', '8', '9', '10', "J", "Q", "K"]
 card_suits = ["H", "C", "D", "S"]
 discard_pile = []
