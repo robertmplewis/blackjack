@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 import random
 
-
 def main():
 	start_game()
+	test_blackjack()
 
 def start_game():
 	print "Welcome to Blackjack in Python!" 
@@ -17,12 +17,20 @@ def start_game():
 
 	player_hand = Hand()
 	dealer_hand = Hand()
+	blackjack = []
 	
 	player_hand.cards.append(shoe.cards.pop())
 	dealer_hand.cards.append(shoe.cards.pop())
 	print "Dealer shows %s" % (dealer_hand)
 	player_hand.cards.append(shoe.cards.pop())
 	dealer_hand.cards.append(shoe.cards.pop())
+
+	if player_hand.blackjack_check == True and dealer_hand.blackjack_check == True:
+		print "Push! Player and dealer have blackjack"
+	elif player_hand.blackjack_check == True and dealer_hand.blackjack_check == False:
+		print "Your hand is a blackjack! You win!"
+	elif player_hand.blackjack_check == False and dealer_hand.blackjack_check == True:
+		print "Dealer has blackjack. You lose."
 
 
 	print  'Your total value is %s' % (player_hand.calculate_value())
@@ -33,8 +41,17 @@ def start_game():
 			player_hand.cards.append(shoe.cards.pop())
 			print  'Your total value is %s' % (player_hand.calculate_value())
 		elif players_move == 'stand' or players_move == 's':
-			print "Ok, you stand."
+			print "Ok, you stand at %s" % (player_hand.calculate_value())
 			break
+
+def game_outcome(player_hand, dealer_hand):
+	discard_pile = player_hand.pop() and dealer_hand.pop()
+	if player_hand.calculate_value < 21 and dealer_hand.calculate_value < player_hand.calculate_value:
+		print "Congratulations you've won!"
+	if player_hand.calculate_value > 21:
+		print "Bust! You lose."
+
+
 
 
 
@@ -100,16 +117,24 @@ class Hand(object):
 			ret = ret + str(card) + ' '
 		return ret
 
+	def has_ace(self):
+		ret = False
+		for card in self.cards:
+			if card.number == 'A':
+				ret = True
+		return ret
+
+	def blackjack_check(self):
+		if self.has_ace() == True and len(self.cards) == 2 and self.calculate_value() == 21:
+			return True
+		return False
+
 	def calculate_value(self):
 		total = 0
 		# turn total into the real total
 		for card in self.cards:
 			total = total + card_values[card_numbers.index(card.number)]
-		has_ace = False
-		for card in self.cards:
-			if card.number == 'A':
-				has_ace = True
-		if total >= 11 and has_ace:
+		if total >= 11 and self.has_ace():
 			total = total + 10 
 		return total
 
@@ -119,6 +144,18 @@ card_suits = ["H", "C", "D", "S"]
 discard_pile = []
 decks = []
 master_deck = []
+
+''' ******************************
+                TESTS
+    ****************************** '''
+def test_blackjack():
+	hand = Hand()
+	card1 = Card("9", "H")
+	card2 = Card("A", "H")
+	hand.cards.append(card1)
+	hand.cards.append(card2)
+	print hand
+	print hand.blackjack_check()
 
 if __name__ == "__main__":	
 	main()
