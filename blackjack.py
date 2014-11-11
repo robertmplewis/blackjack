@@ -3,7 +3,6 @@ import random
 
 def main():
 	start_game()
-	test_blackjack()
 
 def start_game():
 	print "Welcome to Blackjack in Python!" 
@@ -25,32 +24,52 @@ def start_game():
 	player_hand.cards.append(shoe.cards.pop())
 	dealer_hand.cards.append(shoe.cards.pop())
 
-	if player_hand.blackjack_check == True and dealer_hand.blackjack_check == True:
-		print "Push! Player and dealer have blackjack"
-	elif player_hand.blackjack_check == True and dealer_hand.blackjack_check == False:
-		print "Your hand is a blackjack! You win!"
-	elif player_hand.blackjack_check == False and dealer_hand.blackjack_check == True:
-		print "Dealer has blackjack. You lose."
+	if player_hand.blackjack_check() == True and dealer_hand.blackjack_check() == True:
+		print "Push! Player has %s and dealer has %s. Both have blackjack" % (str(player_hand), str(dealer_hand))
+		return
 
+	elif player_hand.blackjack_check() == True and dealer_hand.blackjack_check() == False:
+		print "Your hand is %s a blackjack! You win!" % str(player_hand)
+		return
 
-	print  'Your total value is %s' % (player_hand.calculate_value())
+	elif player_hand.blackjack_check() == False and dealer_hand.blackjack_check() == True:
+		print "Dealer has blackjack with cards %s. You have %s You lose." % (str(dealer_hand), str(player_hand))
+		return
 
 	while True:
+		if player_hand.calculate_value() >= 21:
+			game_outcome(player_hand, dealer_hand)
+			return
+
 		players_move = raw_input("Your hand is now %s. Would you like to hit or stand?" % (player_hand))
+
 		if players_move == 'hit' or players_move == 'h':
 			player_hand.cards.append(shoe.cards.pop())
 			print  'Your total value is %s' % (player_hand.calculate_value())
 		elif players_move == 'stand' or players_move == 's':
 			print "Ok, you stand at %s" % (player_hand.calculate_value())
-			break
+			print "Dealer opens with %s" % str(dealer_hand)
+			while dealer_hand.calculate_value() < 16:
+				dealer_hit = shoe.cards.pop()
+				dealer_hand.cards.append(dealer_hit)
+				print "Dealer hits and receives a %s, now showing cards %s" % (dealer_hit, str(dealer_hand))
+			game_outcome(player_hand, dealer_hand)
+			return
 
 def game_outcome(player_hand, dealer_hand):
-	discard_pile = player_hand.pop() and dealer_hand.pop()
-	if player_hand.calculate_value < 21 and dealer_hand.calculate_value < player_hand.calculate_value:
-		print "Congratulations you've won!"
-	if player_hand.calculate_value > 21:
+	print "You have %s, dealer has %s" % (str(player_hand), str(dealer_hand))
+	if player_hand.calculate_value() < 21 and dealer_hand.calculate_value() < player_hand.calculate_value():
+		print "Congratulations you've won with %s over dealer's %s" % (player_hand.calculate_value(), dealer_hand.calculate_value())
+	if player_hand.calculate_value() > 21:
 		print "Bust! You lose."
-
+	if player_hand.calculate_value() < 21 and dealer_hand.calculate_value() > player_hand.calculate_value():
+		print "You lose, dealer has %s over your %s" % (dealer_hand.calculate_value(), player_hand.calculate_value())
+	if dealer_hand.calculate_value() > 21:
+		print "Dealer has %s for a total of %s. Dealer busts, you win!" % (str(dealer_hand), dealer_hand.calculate_value())
+	discard_pile.extend(player_hand.cards)
+	discard_pile.extend(dealer_hand.cards)
+	player_hand.cards = []
+	dealer_hand.cards = []
 
 
 
