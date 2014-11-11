@@ -2,18 +2,21 @@
 import random
 
 def main():
-	start_game()
-
-def start_game():
+	global shoe
 	print "Welcome to Blackjack in Python!" 
 	deck_count = raw_input('How many decks would you like to use? Enter #: ')
 	deck_count = int(deck_count)
 	print "The game will now start."
-
 	shoe = Shoe(deck_count)
 	shoe.merge_decks()
 	shoe.shuffle_cards()
+	while True:
+		start_game()
 
+def start_game():
+	print "*********"
+	print "New hand"
+	print "*********"
 	player_hand = Hand()
 	dealer_hand = Hand()
 	blackjack = []
@@ -58,18 +61,19 @@ def start_game():
 
 def game_outcome(player_hand, dealer_hand):
 	print "You have %s, dealer has %s" % (str(player_hand), str(dealer_hand))
-	if player_hand.calculate_value() < 21 and dealer_hand.calculate_value() < player_hand.calculate_value():
-		print "Congratulations you've won with %s over dealer's %s" % (player_hand.calculate_value(), dealer_hand.calculate_value())
-	if player_hand.calculate_value() > 21:
-		print "Bust! You lose."
-	if player_hand.calculate_value() < 21 and dealer_hand.calculate_value() > player_hand.calculate_value():
-		print "You lose, dealer has %s over your %s" % (dealer_hand.calculate_value(), player_hand.calculate_value())
 	if dealer_hand.calculate_value() > 21:
 		print "Dealer has %s for a total of %s. Dealer busts, you win!" % (str(dealer_hand), dealer_hand.calculate_value())
+	elif player_hand.calculate_value() < 21 and dealer_hand.calculate_value() < player_hand.calculate_value():
+		print "Congratulations you've won with %s over dealer's %s" % (player_hand.calculate_value(), dealer_hand.calculate_value())
+	elif player_hand.calculate_value() > 21:
+		print "Bust! You lose."
+	elif player_hand.calculate_value() < 21 and dealer_hand.calculate_value() > player_hand.calculate_value():
+		print "You lose, dealer has %s over your %s" % (dealer_hand.calculate_value(), player_hand.calculate_value())
 	discard_pile.extend(player_hand.cards)
 	discard_pile.extend(dealer_hand.cards)
 	player_hand.cards = []
 	dealer_hand.cards = []
+
 
 
 
@@ -163,6 +167,7 @@ card_suits = ["H", "C", "D", "S"]
 discard_pile = []
 decks = []
 master_deck = []
+shoe = None
 
 ''' ******************************
                 TESTS
