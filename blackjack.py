@@ -19,7 +19,6 @@ def interactive_game():
 	print "*********"
 	player_hand = Hand()
 	dealer_hand = Hand()
-	blackjack = []
 	
 	player_hand.cards.append(shoe.cards.pop())
 	dealer_hand.cards.append(shoe.cards.pop())
