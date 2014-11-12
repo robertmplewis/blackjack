@@ -11,9 +11,9 @@ def main():
 	shoe.merge_decks()
 	shoe.shuffle_cards()
 	while True:
-		start_game()
+		interactive_game()
 
-def start_game():
+def interactive_game():
 	print "*********"
 	print "New hand"
 	print "*********"
