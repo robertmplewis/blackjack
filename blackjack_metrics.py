@@ -38,7 +38,7 @@ def blackjack_check():
 def player_move():
 	weak_dealer = False
 	dealer_exposed = dealer_hand.cards[0].number
-	if dealer_exposed in ["A", "2", "3", "4", "5", "6"]:
+	if dealer_exposed in ["2", "3", "4"]:
 		weak_dealer = True
 	while player_hand.calculate_value() <= 11 and weak_dealer == True:
 		player_hand.cards.append(deck.cards.pop())
