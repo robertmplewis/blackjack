@@ -92,7 +92,7 @@ class Deck(object):
 
 	def shuffle_deck(self):
 		random.shuffle(self.cards)
-		print "The deck has now been shuffled!"
+
 
 
 
