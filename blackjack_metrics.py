@@ -16,11 +16,23 @@ def main():
 			if player_hand.calculate_value() <= 21:
 				dealer_move()
 			result = comparison()
-		#results.append(result)
+		if result == 'W':
+			player_hand.bet_amount *= 2
+		elif result == 'L':
+			player_hand.bet_amount = 0
 		results[result] = results[result] + 1
+	print player_balance
 	write_results()
 
 def deal():
+	global player_balance
+	global player_hand
+	global dealer_hand
+	player_hand = Hand()
+	dealer_hand = Hand()
+	current_bet = 10
+	player_hand.bet(current_bet)
+	player_balance -= current_bet
 	player_hand.cards.append(deck.cards.pop())
 	dealer_hand.cards.append(deck.cards.pop())
 	player_hand.cards.append(deck.cards.pop())
@@ -65,8 +77,8 @@ def comparison():
 		return "L"
 
 def table_cleanup():
-	player_hand.cards = []
-	dealer_hand.cards = []
+	global player_balance
+	player_balance += player_hand.bet_amount
 	deck.cards = []
 
 def write_results():
@@ -86,6 +98,7 @@ results = {
 deck = Deck()
 player_hand = Hand()
 dealer_hand = Hand()
+player_balance = 200
 
 if __name__ == '__main__':
 	main()

@@ -132,6 +132,7 @@ class Card(object):
 class Hand(object):
 	def __init__(self):
 		self.cards = []
+ 		self.bet_amount = 0
 
 	def __repr__(self):
 		ret = ''
@@ -159,6 +160,12 @@ class Hand(object):
 		if total >= 11 and self.has_ace():
 			total = total + 10 
 		return total
+
+	def bet(self, amount):
+		self.bet_amount = amount
+
+
+
 
 card_values = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10]
 card_numbers = ["A", '2', '3', '4', '5', '6', '7', '8', '9', '10', "J", "Q", "K"]
